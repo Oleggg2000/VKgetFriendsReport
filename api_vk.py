@@ -6,6 +6,7 @@ from config import ACCESS_TOKEN, USER_ID
 
 def json_report(res_, path_):
     queue = ["first_name", "last_name", "country", "city", "bdate", "sex"]
+    count, count_file, file_num = 0, 1, ""
     data = res_.json()
     report = {"people": []}
     person_dict = dict()
@@ -14,54 +15,87 @@ def json_report(res_, path_):
             for key in person:
                 if queue_key == key and (key == "country" or key == "city"):
                     person_dict[key] = person[key]["title"]
+                    break
                 elif queue_key == key == "bdate":
                     temp = person[key].split(".")
                     if len(temp) == 2:
                         person_dict[key] = f"{temp[1]}-{temp[0]}"
+                        break
                     else:
                         person_dict[key] = f"{temp[2]}-{temp[1]}-{temp[0]}"
+                        break
                 elif queue_key == key:
                     person_dict[key] = person[key]
+                    break
         report["people"].append(person_dict)
         person_dict = dict()
 
-    with open(f"{path_}.json", "w") as f:
+        # Реализация пагинации
+        count += 1
+        if count % 65536 == 0 and len(data["response"]["items"]) != count:
+            with open(f"{path_}{file_num}.json", "w") as f:
+                dump(report, f, indent=4)
+            report = {"people": []}
+            file_num = str(count_file)
+            count_file += 1
+    with open(f"{path_}{file_num}.json", "w") as f:
         dump(report, f, indent=4)
+
+
 
 
 def csv_tsv_reports(res_, format_, path_):
 
-    with open(f'{path_}.{format_}', "w+", encoding="utf-8") as f:
-        queue = ["first_name", "last_name", "country", "city", "bdate", "sex"]
-        data = res_.json()
-        for person in data["response"]["items"]:
-            for queue_key in queue:
-                for key in person:
-                    if queue_key == key and (key == "country" or key == "city"):
+    queue = ["first_name", "last_name", "country", "city", "bdate", "sex"]
+    count, count_file, file_num = 0, 1, ""
+    f = open(f'{path_}{file_num}.{format_}', "w", encoding="utf-8")
+    data = res_.json()
+    for person in data["response"]["items"]:
+        for queue_key in queue:
+            for key in person:
+                if queue_key == key and (key == "country" or key == "city"):
+                    if format_ == "csv":
+                        f.write(person[key]["title"] + ",")
+                        break
+                    else:
+                        f.write(person[key]["title"] + "\t")
+                        break
+                elif queue_key == key == "bdate":
+                    temp = person[key].split(".")
+                    if len(temp) == 2:
                         if format_ == "csv":
-                            f.write(person[key]["title"] + ",")
+                            f.write(f"{temp[1]}-{temp[0]},")
+                            break
                         else:
-                            f.write(person[key]["title"] + "\t")
-                    elif queue_key == key == "bdate":
-                        temp = person[key].split(".")
-                        if len(temp) == 2:
-                            if format_ == "csv":
-                                f.write(f"{temp[1]}-{temp[0]},")
-                            else:
-                                f.write(f"{temp[1]}-{temp[0]}\t")
-                        else:
-                            if format_ == "csv":
-                                f.write(f"{temp[2]}-{temp[1]}-{temp[0]},")
-                            else:
-                                f.write(f"{temp[2]}-{temp[1]}-{temp[0]}\t")
-                    elif queue_key == key == "sex":
-                        f.write(str(person[key]))
-                    elif queue_key == key:
+                            f.write(f"{temp[1]}-{temp[0]}\t")
+                            break
+                    else:
                         if format_ == "csv":
-                            f.write(person[key] + ",")
+                            f.write(f"{temp[2]}-{temp[1]}-{temp[0]},")
+                            break
                         else:
-                            f.write(person[key] + "\t")
-            f.write("\n")
+                            f.write(f"{temp[2]}-{temp[1]}-{temp[0]}\t")
+                            break
+                elif queue_key == key == "sex":
+                    f.write(str(person[key]))
+                    break
+                elif queue_key == key:
+                    if format_ == "csv":
+                        f.write(person[key] + ",")
+                        break
+                    else:
+                        f.write(person[key] + "\t")
+                        break
+        f.write("\n")
+
+        # Реализация пагинации
+        count += 1
+        if count % 65536 == 0 and len(data["response"]["items"]) != count:
+            file_num = str(count_file)
+            f.close()
+            f = open(f'{path_}{file_num}.{format_}', "w", encoding="utf-8")
+            count_file += 1
+    f.close()
 
 
 def friends_report(access_token, user_id, outcomes_format="csv", outcomes_path="report"):
@@ -85,4 +119,4 @@ def friends_report(access_token, user_id, outcomes_format="csv", outcomes_path="
         print(f"Directory {error_pass.filename} doesn't exist!")
 
 
-friends_report(access_token=ACCESS_TOKEN, user_id=USER_ID, outcomes_format="TCS", outcomes_path="reports/report")
+friends_report(access_token=ACCESS_TOKEN, user_id=USER_ID, outcomes_format="tsv", outcomes_path="reports/report")
