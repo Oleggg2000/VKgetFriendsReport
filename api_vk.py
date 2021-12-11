@@ -1,11 +1,10 @@
 import requests
 from json import dump
 
-access_token = "868a9d12c1a00544fafd8af42ef20bef68cea03917bc7c5e86ce58e0665f632e144aa2cf38072ef342f52"
-user_id = "141482603"
+from config import ACCESS_TOKEN, USER_ID
 
 
-def json_report(res_, format_, path_):
+def json_report(res_, path_):
     queue = ["first_name", "last_name", "country", "city", "bdate", "sex"]
     data = res_.json()
     report = {"people": []}
@@ -26,11 +25,12 @@ def json_report(res_, format_, path_):
         report["people"].append(person_dict)
         person_dict = dict()
 
-    with open(f"{path_}.{format_}", "w") as f:
+    with open(f"{path_}.json", "w") as f:
         dump(report, f, indent=4)
 
 
-def csv_report(res_, format_, path_):
+def csv_tsv_reports(res_, format_, path_):
+
     with open(f'{path_}.{format_}', "w+", encoding="utf-8") as f:
         queue = ["first_name", "last_name", "country", "city", "bdate", "sex"]
         data = res_.json()
@@ -38,17 +38,29 @@ def csv_report(res_, format_, path_):
             for queue_key in queue:
                 for key in person:
                     if queue_key == key and (key == "country" or key == "city"):
-                        f.write(person[key]["title"] + ",")
+                        if format_ == "csv":
+                            f.write(person[key]["title"] + ",")
+                        else:
+                            f.write(person[key]["title"] + "\t")
                     elif queue_key == key == "bdate":
                         temp = person[key].split(".")
                         if len(temp) == 2:
-                            f.write(f"{temp[1]}-{temp[0]},")
+                            if format_ == "csv":
+                                f.write(f"{temp[1]}-{temp[0]},")
+                            else:
+                                f.write(f"{temp[1]}-{temp[0]}\t")
                         else:
-                            f.write(f"{temp[2]}-{temp[1]}-{temp[0]},")
+                            if format_ == "csv":
+                                f.write(f"{temp[2]}-{temp[1]}-{temp[0]},")
+                            else:
+                                f.write(f"{temp[2]}-{temp[1]}-{temp[0]}\t")
                     elif queue_key == key == "sex":
                         f.write(str(person[key]))
                     elif queue_key == key:
-                        f.write(person[key] + ",")
+                        if format_ == "csv":
+                            f.write(person[key] + ",")
+                        else:
+                            f.write(person[key] + "\t")
             f.write("\n")
 
 
@@ -62,14 +74,15 @@ def friends_report(access_token, user_id, outcomes_format="csv", outcomes_path="
     except KeyError:
         pass
 
-    if outcomes_format.lower() == "csv":
-        csv_report(response, outcomes_format.lower(), outcomes_path)
-    elif outcomes_format.lower() == "json":
-        json_report(response, outcomes_format.lower(), outcomes_path)
-    elif outcomes_format.lower() == "tsv":
-        pass
-    else:
-        print("The entered format isn't supported! Try one of these: csv, json or tcs")
+    try:
+        if outcomes_format.lower() == "csv" or outcomes_format.lower() == "tsv":
+            csv_tsv_reports(response, outcomes_format.lower(), outcomes_path)
+        elif outcomes_format.lower() == "json":
+            json_report(response, outcomes_path)
+        else:
+            print("The entered format isn't supported! Try one of these: csv, json or tcs")
+    except FileNotFoundError as error_pass:
+        print(f"Directory {error_pass.filename} doesn't exist!")
 
 
-friends_report(access_token=access_token, user_id=user_id, outcomes_format="csv", outcomes_path="reports/report")
+friends_report(access_token=ACCESS_TOKEN, user_id=USER_ID, outcomes_format="TCS", outcomes_path="reports/report")
