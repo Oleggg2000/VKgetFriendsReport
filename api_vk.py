@@ -1,7 +1,12 @@
+import sys
+
 import requests
 from json import dump
 
 from config import ACCESS_TOKEN, USER_ID
+
+CSV_TSV_PAGINATION_NUM = 65536  # Equal to limit of CSV rows in Open Office program (250000 rows for MS Excel)
+JSON_PAGINATION_NUM = 65536
 
 
 def json_report(res_, path_):
@@ -29,10 +34,13 @@ def json_report(res_, path_):
                     break
         report["people"].append(person_dict)
         person_dict = dict()
+        if sys.getsizeof(report) > 5368708121:  # 5,368,709,121 bytes (5 GB) JSON parser limits according to ibm.com
+            print("Size of JSON file is too big! Interrupting...")  # Реализовать логирование
+            return
 
         # Реализация пагинации
         count += 1
-        if count % 65536 == 0 and len(data["response"]["items"]) != count:
+        if count % JSON_PAGINATION_NUM == 0 and len(data["response"]["items"]) != count:
             with open(f"{path_}{file_num}.json", "w") as f:
                 dump(report, f, indent=4)
             report = {"people": []}
@@ -42,10 +50,7 @@ def json_report(res_, path_):
         dump(report, f, indent=4)
 
 
-
-
 def csv_tsv_reports(res_, format_, path_):
-
     queue = ["first_name", "last_name", "country", "city", "bdate", "sex"]
     count, count_file, file_num = 0, 1, ""
     f = open(f'{path_}{file_num}.{format_}', "w", encoding="utf-8")
@@ -90,7 +95,7 @@ def csv_tsv_reports(res_, format_, path_):
 
         # Реализация пагинации
         count += 1
-        if count % 65536 == 0 and len(data["response"]["items"]) != count:
+        if count % CSV_PAGINATION_NUM == 0 and len(data["response"]["items"]) != count:
             file_num = str(count_file)
             f.close()
             f = open(f'{path_}{file_num}.{format_}', "w", encoding="utf-8")
@@ -119,4 +124,13 @@ def friends_report(access_token, user_id, outcomes_format="csv", outcomes_path="
         print(f"Directory {error_pass.filename} doesn't exist!")
 
 
-friends_report(access_token=ACCESS_TOKEN, user_id=USER_ID, outcomes_format="tsv", outcomes_path="reports/report")
+if __name__ == "__main__":
+    if len(sys.argv) == 3:
+        friends_report(access_token=ACCESS_TOKEN, user_id=USER_ID, outcomes_format=sys.argv[1], outcomes_path=sys.argv[2])
+    elif input(("Do you want to type in output format of the file and path to output file?\n"
+                "If not then default format and path will apply. y/n: ")) == "y":
+        friends_report(access_token=ACCESS_TOKEN, user_id=USER_ID,
+                       outcomes_format=input("Type in format of output file: "),
+                       outcomes_path=input("Type in path to the output file and it's name: "))
+    else:
+        friends_report(access_token=ACCESS_TOKEN, user_id=USER_ID)
