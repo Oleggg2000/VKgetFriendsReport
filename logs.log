@@ -1,0 +1,48 @@
+2021-12-12 10:58:50,272 - api_key.py - INFO - Program started!
+2021-12-12 10:58:52,146 - api_key.py - INFO - Less or more than three arguments were submitted for input
+2021-12-12 10:58:52,146 - api_key.py - INFO - Arguments were typed in from keyboard
+2021-12-12 10:59:03,943 - api_key.py - INFO - Entered to the friends_report function
+2021-12-12 10:59:04,635 - api_key.py - INFO - Entered to csv_tsv_report function
+2021-12-12 10:59:04,648 - api_key.py - INFO - Exited from csv_tsv_report function
+2021-12-12 10:59:04,649 - api_key.py - INFO - Exited from friends_report function
+2021-12-12 10:59:04,649 - api_key.py - INFO - The program is completed! 
+2021-12-12 10:59:04,649 - api_key.py - INFO - ---------------------------------------------------------------------
+2021-12-12 10:59:20,029 - api_key.py - INFO - Program started!
+2021-12-12 10:59:22,897 - api_key.py - INFO - Running program with default arguments
+2021-12-12 10:59:22,897 - api_key.py - INFO - Entered to the friends_report function
+2021-12-12 10:59:23,667 - api_key.py - INFO - Entered to csv_tsv_report function
+2021-12-12 10:59:23,680 - api_key.py - INFO - Exited from csv_tsv_report function
+2021-12-12 10:59:23,681 - api_key.py - INFO - Exited from friends_report function
+2021-12-12 10:59:23,681 - api_key.py - INFO - The program is completed! 
+2021-12-12 10:59:23,681 - api_key.py - INFO - ---------------------------------------------------------------------
+2021-12-12 11:03:32,404 - api_key.py - INFO - Program started!
+2021-12-12 11:03:38,180 - api_key.py - INFO - Less or more than three arguments were submitted for input
+2021-12-12 11:03:38,180 - api_key.py - INFO - Arguments were typed in from keyboard
+2021-12-12 11:03:53,167 - api_key.py - INFO - Entered to the friends_report function
+2021-12-12 11:03:53,949 - api_key.py - ERROR - The entered format isn't supported! Try one of these: csv, json or tcs
+2021-12-12 11:03:53,949 - api_key.py - INFO - Exited from friends_report function
+2021-12-12 11:03:53,949 - api_key.py - INFO - The program is completed! 
+2021-12-12 11:03:53,949 - api_key.py - INFO - ---------------------------------------------------------------------
+2021-12-12 11:04:45,257 - api_key.py - INFO - Program started!
+2021-12-12 11:04:48,303 - api_key.py - INFO - Running program with default arguments
+2021-12-12 11:04:48,303 - api_key.py - INFO - Entered to the friends_report function
+2021-12-12 11:04:48,528 - api_key.py - ERROR - HTTP error occurred: User authorization failed: invalid access_token (4).
+2021-12-12 11:04:48,529 - api_key.py - INFO - The program is completed! 
+2021-12-12 11:04:48,529 - api_key.py - INFO - ---------------------------------------------------------------------
+2021-12-12 11:04:56,399 - api_key.py - INFO - Program started!
+2021-12-12 11:04:59,313 - api_key.py - INFO - Less or more than three arguments were submitted for input
+2021-12-12 11:04:59,314 - api_key.py - INFO - Arguments were typed in from keyboard
+2021-12-12 11:05:44,116 - api_key.py - INFO - Entered to the friends_report function
+2021-12-12 11:05:44,877 - api_key.py - INFO - Entered to csv_tsv_report function
+2021-12-12 11:05:44,878 - api_key.py - ERROR - Directory reportdoentexist/report.csv doesn't exist!
+2021-12-12 11:05:44,878 - api_key.py - INFO - Exited from friends_report function
+2021-12-12 11:05:44,878 - api_key.py - INFO - The program is completed! 
+2021-12-12 11:05:44,878 - api_key.py - INFO - ---------------------------------------------------------------------
+2021-12-12 11:06:21,890 - api_key.py - INFO - Program started!
+2021-12-12 11:06:24,849 - api_key.py - INFO - Running program with default arguments
+2021-12-12 11:06:24,849 - api_key.py - INFO - Entered to the friends_report function
+2021-12-12 11:06:25,812 - api_key.py - INFO - Entered to csv_tsv_report function
+2021-12-12 11:06:25,829 - api_key.py - INFO - Exited from csv_tsv_report function
+2021-12-12 11:06:25,830 - api_key.py - INFO - Exited from friends_report function
+2021-12-12 11:06:25,830 - api_key.py - INFO - The program is completed! 
+2021-12-12 11:06:25,830 - api_key.py - INFO - ---------------------------------------------------------------------
