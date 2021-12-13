@@ -106,6 +106,10 @@ def csv_tsv_reports(res_, format_, path_):
                     else:
                         f.write(person[key] + "\t")
                         break
+            if format_ == "csv":
+                f.write(",")
+            else:
+                f.write("\t")
         f.write("\n")
 
         # Pagination implementation
@@ -123,7 +127,7 @@ def csv_tsv_reports(res_, format_, path_):
 
 def friends_report(access_token, user_id, outcomes_format="csv", outcomes_path="report"):
     logger.info("Entered to the friends_report function")
-    response = requests.get(("https://api.vk.com/method/friends.get?v=5.131&fields=country, city, bdate, sex&"
+    response = requests.get(("https://api.vk.com/method/friends.get?v=5.131&fields=country,city,bdate,sex&"
                             f"order=name&access_token={access_token}&user_id={user_id}"))
     try:
         if response.json()["error"]:
@@ -151,7 +155,8 @@ if __name__ == "__main__":
     logger.info("Program started!")
     if len(sys.argv) == 3:
         logger.info("Three arguments were submitted for input")
-        friends_report(access_token=ACCESS_TOKEN, user_id=USER_ID, outcomes_format=sys.argv[1], outcomes_path=sys.argv[2])
+        friends_report(access_token=ACCESS_TOKEN, user_id=USER_ID,
+                       outcomes_format=sys.argv[1], outcomes_path=sys.argv[2])
     elif input(("Do you want to type in output format of the file and path to output file?\n"
                 "If not then default format and path will apply. y/n: ")) == "y":
         logger.info("Less or more than three arguments were submitted for input")
